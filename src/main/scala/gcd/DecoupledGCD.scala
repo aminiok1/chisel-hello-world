@@ -4,6 +4,7 @@ package gcd
 
 import chisel3._
 import chisel3.util.Decoupled
+import chisel3.stage.ChiselStage
 
 class GcdInputBundle(val w: Int) extends Bundle {
   val value1 = UInt(w.W)
@@ -23,7 +24,7 @@ class GcdOutputBundle(val w: Int) extends Bundle {
   * Unless first input is zero then the Gcd is y.
   * Can handle stalls on the producer or consumer side
   */
-class DecoupledGcd(width: Int) extends MultiIOModule {
+class DecoupledGcd(width:Int) extends MultiIOModule {
   val input = IO(Flipped(Decoupled(new GcdInputBundle(width))))
   val output = IO(Decoupled(new GcdOutputBundle(width)))
 
@@ -70,4 +71,8 @@ class DecoupledGcd(width: Int) extends MultiIOModule {
       busy := true.B
     }
   }
+}
+
+object GcdDriver extends App{
+  (new ChiselStage).emitVerilog(new GCD)
 }
